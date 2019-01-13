@@ -156,6 +156,7 @@ function Neo4jD3(_selector, _options) {
                        if (typeof options.onNodeDoubleClick === 'function') {
                            options.onNodeDoubleClick(d);
                        }
+                       event.stopPropagation();
                    })
                    .on('mouseenter', function(d) {
                        if (info) {
