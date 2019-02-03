@@ -22,7 +22,8 @@ function Neo4jD3(_selector, _options) {
             nodeOutlineFillColor: undefined,
             nodeRadius: 25,
             relationshipColor: '#a5abb6',
-            zoomFit: false
+            zoomFit: false,
+            editable: false,
         },
         VERSION = '0.0.1';
 
@@ -48,6 +49,9 @@ function Neo4jD3(_selector, _options) {
                        }))
                        .on('dblclick.zoom', null)
                        .on('dblclick', function() {
+                           if (!options.editable)
+                               return false;
+
                            var data = {
                                nodes: [],
                                relationships: []
