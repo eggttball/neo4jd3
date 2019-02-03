@@ -162,7 +162,7 @@ function Neo4jD3(_selector, _options) {
                            for (i = 0; i < options.highlight.length; i++) {
                                highlight = options.highlight[i];
 
-                               if (d.labels[0] === highlight.class && d.properties[highlight.property] === highlight.value) {
+                               if ((highlight.class === undefined || d.labels[0] === highlight.class) && d.properties[highlight.property] === highlight.value) {
                                    classes += ' node-highlighted';
                                    break;
                                }
