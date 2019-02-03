@@ -24,7 +24,8 @@ function Neo4jD3(_selector, _options) {
             nodeTextProperty: undefined,
             nodeTextColor: '#ffffff',
             relationshipColor: '#a5abb6',
-            zoomFit: false
+            zoomFit: false,
+            editable: false,
         },
         VERSION = '0.0.1';
 
@@ -49,6 +50,31 @@ function Neo4jD3(_selector, _options) {
                            svg.attr('transform', 'translate(' + translate[0] + ', ' + translate[1] + ') scale(' + scale + ')');
                        }))
                        .on('dblclick.zoom', null)
+                       .on('dblclick', function() {
+                           if (!options.editable)
+                               return false;
+
+                           var data = {
+                               nodes: [],
+                               relationships: []
+			   };
+
+                           var node = {
+                               id: size().nodes + 1,
+                               labels: ["Unknown"],
+                               properties: {
+                                   name: "new node",
+                                   created_date: Date.now(),
+                                   updated_date: Date.now(),
+                                   is_new_created: true
+                               },
+                               x: event.x,
+                               y: event.y
+			   };
+
+                           data.nodes.push(node);
+                           updateWithD3Data(data);
+                       })
                        .append('g')
                        .attr('width', '100%')
                        .attr('height', '100%');
@@ -360,7 +386,7 @@ function Neo4jD3(_selector, _options) {
 
     function contains(array, id) {
         var filter = array.filter(function(elem) {
-            return elem.id === id;
+            return id !== undefined && elem.id === id;
         });
 
         return filter.length > 0;
