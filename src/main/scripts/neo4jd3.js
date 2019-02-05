@@ -482,6 +482,16 @@ function Neo4jD3(_selector, _options) {
                     switch (labelPropertyValue.length) {
                         case 3:
                         value = labelPropertyValue[2];
+                        if (value === '{today}') {
+                            var today = new Date();
+                            var dd = today.getDate();
+                            var mm = today.getMonth() + 1; //January is 0!
+                            var yyyy = today.getFullYear();
+
+                            if (dd < 10) dd = '0' + dd;
+                            if (mm < 10) mm = '0' + mm;
+                            value = mm + '/' + dd + '/' + yyyy;
+                        }
                         /* falls through */
                         case 2:
                         property = labelPropertyValue[1];
@@ -532,6 +542,16 @@ function Neo4jD3(_selector, _options) {
                     switch (labelPropertyValue.length) {
                         case 3:
                         value = labelPropertyValue[2];
+                        if (value === '{today}') {
+                            var today = new Date();
+                            var dd = today.getDate();
+                            var mm = today.getMonth() + 1; //January is 0!
+                            var yyyy = today.getFullYear();
+
+                            if (dd < 10) dd = '0' + dd;
+                            if (mm < 10) mm = '0' + mm;
+                            value = mm + '/' + dd + '/' + yyyy;
+                        }
                         /* falls through */
                         case 2:
                         property = labelPropertyValue[1];
