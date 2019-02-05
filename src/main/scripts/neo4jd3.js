@@ -454,13 +454,45 @@ function Neo4jD3(_selector, _options) {
         var code;
 
         if (options.iconMap && options.showIcons && options.icons) {
-            if (options.icons[d.labels[0]] && options.iconMap[options.icons[d.labels[0]]]) {
-                code = options.iconMap[options.icons[d.labels[0]]];
-            } else if (options.iconMap[d.labels[0]]) {
-                code = options.iconMap[d.labels[0]];
-            } else if (options.icons[d.labels[0]]) {
-                code = options.icons[d.labels[0]];
+
+            var iconsForLabel = options.iconMap[d.labels[0]];
+            if (iconsForLabel) {
+                for (var i = 0; i < iconsForLabel.length; i++) {
+                    var label, property, value;
+                    var labelPropertyValue = iconsForLabel[i].split('|');
+
+                    switch (labelPropertyValue.length) {
+                        case 3:
+                        value = labelPropertyValue[2];
+                        if (value === '{today}') {
+                            var today = new Date();
+                            var dd = today.getDate();
+                            var mm = today.getMonth() + 1; //January is 0!
+                            var yyyy = today.getFullYear();
+
+                            if (dd < 10) dd = '0' + dd;
+                            if (mm < 10) mm = '0' + mm;
+                            value = mm + '/' + dd + '/' + yyyy;
+                        }
+                        /* falls through */
+                        case 2:
+                        property = labelPropertyValue[1];
+                        /* falls through */
+                        case 1:
+                        label = labelPropertyValue[0];
+                    }
+
+                    if (d.labels[0] == label &&
+                        (!property || d.properties[property] !== undefined) &&
+                        (!value || d.properties[property] === value) &&
+                        options.icons[iconsForLabel] &&
+                        options.iconMap[options.icons[iconsForLabel]]
+                    ) {
+                        code = options.iconMap[options.icons[iconsForLabel]];
+                    }
+                }
             }
+
         }
 
         return code;
@@ -576,7 +608,6 @@ function Neo4jD3(_selector, _options) {
     }
 
     function init(_selector, _options) {
-        initIconMap();
 
         merge(options, _options);
 
@@ -588,6 +619,7 @@ function Neo4jD3(_selector, _options) {
             options.minCollision = options.nodeRadius * 2;
         }
 
+        initIconMap();
         initImageMap();
 
         selector = _selector;
@@ -615,14 +647,19 @@ function Neo4jD3(_selector, _options) {
     }
 
     function initIconMap() {
-        Object.keys(options.iconMap).forEach(function(key, index) {
-            var keys = key.split(','),
-                value = options.iconMap[key];
+        var key, keys;
 
-            keys.forEach(function(key) {
-                options.iconMap[key] = value;
-            });
-        });
+        for (key in options.icons) {
+            if (options.icons.hasOwnProperty(key)) {
+                keys = key.split('|');
+
+                if (!options.iconMap[keys[0]]) {
+                    options.iconMap[keys[0]] = [key];
+                } else {
+                    options.iconMap[keys[0]].push(key);
+                }
+            }
+        }
     }
 
     function initImageMap() {
