@@ -485,7 +485,7 @@ function Neo4jD3(_selector, _options) {
                         (!property || d.properties[property] !== undefined) &&
                         (!value || d.properties[property] === value)) {
                         if (labelPropertyValue.length > imgLevel) {
-                            img = options.images[imagesForLabel[i]];
+                            img = options.images[imagesForLabel[i]]['url'] || options.images[imagesForLabel[i]];
                             imgLevel = labelPropertyValue.length;
                         }
                     }
