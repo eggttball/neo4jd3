@@ -89,19 +89,27 @@ function Neo4jD3(_selector, _options) {
     function appendImageToNode(node) {
         return node.append('image')
                    .attr('height', function(d) {
-                       return icon(d) ? '24px': '30px';
+                       var style = getImageStyle(d);
+                       var height = (style === null) ? '30px' : style.scaledHeight;
+                       return icon(d) ? '24px': height;
                    })
                    .attr('x', function(d) {
-                       return icon(d) ? '5px': '-15px';
+                       var style = getImageStyle(d);
+                       var x = (style === null) ? '-15px' : style.scaledX;
+                       return icon(d) ? '5px': x;
                    })
                    .attr('xlink:href', function(d) {
                        return image(d);
                    })
                    .attr('y', function(d) {
-                       return icon(d) ? '5px': '-16px';
+                       var style = getImageStyle(d);
+                       var y = (style === null) ? '-16px' : style.scaledY;
+                       return icon(d) ? '5px': y;
                    })
                    .attr('width', function(d) {
-                       return icon(d) ? '24px': '30px';
+                       var style = getImageStyle(d);
+                       var width = (style === null) ? '30px' : style.scaledWidth;
+                       return icon(d) ? '24px': width;
                    });
     }
 
@@ -456,6 +464,57 @@ function Neo4jD3(_selector, _options) {
         }
 
         return code;
+    }
+
+    function getImageStyle(d) {
+        var imagesForLabel, imgLevel, labelPropertyValue;
+
+        if (options.images) {
+            imagesForLabel = options.imageMap[d.labels[0]];
+
+            if (imagesForLabel) {
+                imgLevel = 0;
+
+                for (var i = 0; i < imagesForLabel.length; i++) {
+                    var label, property, value;
+                    labelPropertyValue = imagesForLabel[i].split('|');
+
+                    switch (labelPropertyValue.length) {
+                        case 3:
+                        value = labelPropertyValue[2];
+                        /* falls through */
+                        case 2:
+                        property = labelPropertyValue[1];
+                        /* falls through */
+                        case 1:
+                        label = labelPropertyValue[0];
+                    }
+
+                    if (d.labels[0] === label &&
+                        (!property || d.properties[property] !== undefined) &&
+                        (!value || d.properties[property] === value)) {
+                        if (labelPropertyValue.length > imgLevel) {
+                            var style = options.images[imagesForLabel[i]];
+                            if (typeof style === 'string' || style instanceof String)
+                                return null;
+                            else {
+                                var width = (parseFloat(style.width) / 100) * options.nodeRadius * 2 + 'px';
+                                var height = (parseFloat(style.height) / 100) * options.nodeRadius * 2 + 'px';
+                                var x = (parseFloat(style.positionX) + -1 * options.nodeRadius * (parseFloat(style.width) / 100)) + 'px';
+                                var y = (parseFloat(style.positionY) + -1 * options.nodeRadius * (parseFloat(style.height) / 100)) + 'px';
+                                style.scaledWidth = width;
+                                style.scaledHeight = height;
+                                style.scaledX = x;
+                                style.scaledY = y;
+                                return style;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        return null;
     }
 
     function image(d) {
