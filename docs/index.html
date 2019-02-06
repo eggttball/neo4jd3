@@ -16,6 +16,15 @@
                 height: 100%;
                 overflow: hidden;
             }
+
+            .node > .text {
+                font: 1.1em arial, sans-serif;
+                color: #333333;
+            }
+
+            .node > .icon {
+                font-size: 2.5em
+            }
         </style>
     </head>
     <body>
@@ -59,15 +68,28 @@
                         'Phone': 'phone',
                         'Project': 'folder-open',
                         'SecurityChallengeAnswer': 'commenting',
-                        'User': 'user',
+                        'Person|privacy|hidden': 'user',
                         'zoomFit': 'arrows-alt',
                         'zoomIn': 'search-plus',
                         'zoomOut': 'search-minus'
                     },
                     images: {
+                        'Book': {
+                            url: 'img/sample.png',
+                            positionX: '0px',
+                            positionY: '0px',
+                            width: '100%',
+                            height: '100%'
+                        },
                         'Address': 'img/twemoji/1f3e0.svg',
 //                        'Api': 'img/twemoji/1f527.svg',
-                        'BirthDate': 'img/twemoji/1f382.svg',
+                        'Person|birthday|{today}': {
+                            url: 'img/twemoji/1f382.svg',
+                            positionX: '50px',
+                            positionY: '35px',
+                            width: '50%',
+                            height: '50%'
+                        },
                         'Cookie': 'img/twemoji/1f36a.svg',
                         'CreditCard': 'img/twemoji/1f4b3.svg',
                         'Device': 'img/twemoji/1f4bb.svg',
