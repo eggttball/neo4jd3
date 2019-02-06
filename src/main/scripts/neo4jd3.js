@@ -11,6 +11,7 @@ function Neo4jD3(_selector, _options) {
             arrowSize: 4,
             colors: colors(),
             highlight: undefined,
+            entry: undefined,
             iconMap: fontAwesomeIcons(),
             icons: undefined,
             imageMap: {},
@@ -171,12 +172,19 @@ function Neo4jD3(_selector, _options) {
                                highlight = options.highlight[i];
 
                                if ((highlight.class === undefined || d.labels[0] === highlight.class) && d.properties[highlight.property] === highlight.value) {
-                                   d.fx = svg.node().parentElement.parentElement.clientWidth / 2;
-                                   d.fy = svg.node().parentElement.parentElement.clientHeight / 2;
                                    classes += ' node-highlighted';
                                    break;
                                }
                            }
+                       }
+
+                       if (options.entry) {
+                           var entry = options.entry;
+                           if ((entry.class === undefined || d.labels[0] === entry.class) && d.properties[entry.property] === entry.value) {
+                               d.fx = svg.node().parentElement.parentElement.clientWidth / 2;
+                               d.fy = svg.node().parentElement.parentElement.clientHeight / 2;
+                               classes += ' node-entry';
+                         }
                        }
 
                        return classes;
